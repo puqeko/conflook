@@ -1,0 +1,60 @@
+# Enforce consistent style and check for common erros before making a git commit
+# See https://pre-commit.com for more information
+
+repos:
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.1.10
+    hooks:
+      - id: remove-tabs
+        description: Replace tabs with spaces
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
+      # Files
+      - id: check-case-conflict
+        description: Check for files that would conflict in case-insensitive filesystems
+      - id: name-tests-test
+        description: Verifies that test files are named correctly
+      - id: check-added-large-files
+        description: Cannot add files > 500kb
+
+      # Formatting
+      - id: trailing-whitespace
+        description: Remove excess whitespace
+      - id: end-of-file-fixer
+        description: Add newlines
+      - id: check-executables-have-shebangs
+      - id: check-ast
+        description: Check for valid Python
+      - id: debug-statements
+        description: Check for debugger imports and py37+ `breakpoint()` calls in python source
+      - id: check-toml
+      - id: check-yaml
+
+  # Sort Python imports automatically
+  - repo: https://github.com/pycqa/isort
+    rev: 5.8.0
+    hooks:
+      - id: isort
+        name: Put import statements in order (isort)
+
+  # Enforce consistent code formatting
+  - repo: https://github.com/psf/black
+    rev: 20.8b1
+    hooks:
+      - id: black
+        name: Python auto-formatter (black)
+
+  - repo: https://github.com/PyCQA/pylint
+    rev: pylint-2.7.4
+    hooks:
+      - id: pylint
+        name: Check errors and enforce style (pylint)
+        description: Static code analyser to find errors and enforce good practice
+        args:
+          - --rcfile
+          - pylintrc.toml
+          # Pylint is run from pdm so import checks will fail. Disable import checks.
+          # Run pylint as a local hook if you want to enable import checks.
+          - --disable=import-error

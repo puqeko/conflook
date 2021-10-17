@@ -1,0 +1,10 @@
+# System
+.DS_Store
+
+# Python
+__pycache__
+__pypackages__
+
+# Dev
+.pdm.toml
+dist/

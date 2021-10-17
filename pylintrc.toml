@@ -1,0 +1,321 @@
+# Settings for pylint
+# Because python is interpreted, many errors are usually not encountered until the
+# code is run. Linting aims to find errors and enforce good practice before code is run.
+# Assuming python >=3.9 and code is preformated with 'black' and 'isort' so that pylint
+# need not check for formatting and import layouts.
+# https://pypi.org/project/black/
+# https://pypi.org/project/isort/
+
+[tool.pylint.'MASTER']
+# Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
+# number of processors available to use.
+jobs = 1
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = "all"                           # Turn off all defaults
+enable = [                                # Now enable only the checks we want
+# Details at http://pylint.pycqa.org/en/latest/technical_reference/features.html
+
+# Nit-picks & preferences
+      "missing-module-docstring",         # C0114
+      "missing-class-docstring",          # C0115
+      "missing-function-docstring",       # C0116
+      "misplaced-comparison-constant",    # C0122: put constants on right hand side
+      "fixme",                            # W0511: just fix it or raise an issue on github
+
+# Good practice & clarity
+      "invalid-name",                     # C0103: var names should follow convension
+      "empty-docstring",                  # C0112: if you are going to have one, say something
+      "unneeded-not",                     # C0113: can be simplified without not
+      "singleton-comparison",             # C0121: eg 'if foo:' instead of 'if foo == True:'
+      "unidiomatic-typecheck",            # C0123: use isinstance() rather than type()
+      "consider-using-enumerate",         # C0200: eg 'for i, item in enumerate(items):'
+      # "consider-iterating-dictionary",    # C0201: should do 'for key in dictionary:' instead
+      "single-string-used-for-slots",     # C0205: disallow slot string syntax
+      "useless-import-alias",             # C0414:
+      "len-as-condition",                 # C1801: do 'if len(s) == 0' for example
+
+      "pointless-statement",              # W0104
+      "expression-not-assigned",          # W0106: useless expression
+      "unnecessary-lambda",               # W0108: lambda x, y: func(x, y)
+      "assign-to-new-keyword",            # W0111: words airmarked for future python versions
+      "confusing-with-statement",         # W0124: 'with ctx as a, b' is confusing
+      "using-constant-test",              # W0125: either remove it or comment it out
+      "comparison-with-callable",         # W0143: probably missing ()
+      "no-init",                          # W0232: classes should have __init__
+
+      "no-self-use",                      # R0201: a method without 'self' should be a function
+      "useless-object-inheritance",       # R0205: classes don't need to inherit 'Object'
+      "duplicate-code",                   # R0801
+      "consider-merging-isinstance",      # R1701: into single call
+      "too-many-nested-blocks",           # R1702: default 5, can be changed
+      "simplifiable-if-statement",        # R1703: can become one-liner
+      "redefined-argument-from-local",    # R1704: eg, argument 'x' to function is used in loop
+      "no-else-return",                   # R1705: if all 'if's return then else is not needed
+      "consider-using-ternary",           # R1706
+      "trailing-comma-tuple",             # R1707: enforce '()' around tuple
+      "stop-iteration-return",            # R1708: see PEP479
+      "simplify-boolean-expression",      # R1709: redundant pre-python 2.5 ternary syntax is used
+      "inconsistent-return-statements",   # R1710: explicitly return None if needeed
+      "useless-return",                   # R1711: at end of function None is automatically returned
+      "consider-swap-variables",          # R1712: a, b = b, a
+      "consider-using-join",              # R1713: in place of loops
+      "consider-using-in",                # R1714: eg 'a == 2 and b == 3' => '(a, b) == (2, 3)'
+      "consider-using-get",               # R1715: use d.get('key', default) so that keyerrors don't crash site
+      "chained-comparison",               # R1716: eg 'a < b and b < c' => 'a < b < c'
+      "consider-using-dict-comprehension",# R1717: use '{'a':b}' instead of 'dict([('a', b)])'
+      "consider-using-set-comprehension", # R1718: use '{a,b}' instead of 'set([a, b)])'
+      "simplifiable-if-expression",       # R1719: can become one-liner
+      "no-else-raise",                    # R1720: if all 'if's raise then else is not needed
+      "unnecessary-comprehension",        # R1721: eg 'dict(zip(a, b))'' instead of '{c:d for c, d in zip(a, b)}'
+      "no-else-break",                    # R1723: if all 'if's break then else is not needed
+      "no-else-continue",                 # R1724: if all 'if's continue then else is not needed
+      "simplifiable-condition",           # R1726
+      "condition-evals-to-constant",      # R1727
+
+# Mistakes, conflicts, and bad or misleading ideas
+      "init-is-generator",                # E0100: __init__ cannot be a generator with yield
+      "return-in-init",                   # E0101: __init__ should not return
+      "function-redefined",               # E0102: defined the same func/meth/class twice
+      "not-in-loop",                      # E0103: 'break' or 'continue' in bad location
+      "return-outside-function",          # E0104: 'return' in bad location
+      "yield-outside-function",           # E0105: 'yield' in bad location
+      "nonexistent-operator",             # E0107: The ++ and -- ops do not exist in py
+      "duplicate-argument-name",          # E0108: more than 1 func arg of the same name
+      "abstract-class-instantiated",      # E0110: no instances of abstract classes
+      "bad-reversed-sequence",            # E0111: reversed() only works on sequences
+      "too-many-star-expression",         # E0112: 'a,*b,*c = []' is abiguous
+      "invalid-star-assignment-target",   # E0113: must be tuple or list
+      "star-needs-assignment-target",     # E0114: 'a,b,*c = []' is only valid use for *
+      "nonlocal-and-global",              # E0115: should not be both
+      "continue-in-finally",              # E0116
+      "nonlocal-without-binding",         # E0117: nonlocal is not referenced in parent scope
+      "used-prior-global-declaration",    # E0118: eg NAME before 'global NAME' statement
+      "misplaced-format-function",        # E0119: .format() only works on str types
+      "method-hidden",                    # E0202: method is covered by later definition
+      "access-member-before-definition",  # E0203
+      "no-method-argument",               # E0211: needs a 'self' argument
+      "no-self-argument",                 # E0213: ^
+      "invalid-slots-object",             # E0236
+      "assigning-non-slot",               # E0237: ensure __slots__ is used correctly
+      "invalid-slots",                    # E0238
+      "inherit-non-class",                # E0239
+      "inconsistent-mro",                 # E0240: if A inherits B & C which both inhert D
+      "duplicate-bases",                  # E0241: if a base is already defined
+      "class-variable-slots-conflict",    # E0242
+      "unexpected-special-method-signature", # E0302: check __xxx__ methods
+      "non-iterator-returned",            # E0301: __iter__ must return something iterable
+      "invalid-length-returned",          # E0303: __len__ must return +ve int()
+      "invalid-bool-returned",            # E0304: __bool__ must return bool()
+      "invalid-index-returned",           # E0305: __index__ must return int()
+      "invalid-repr-returned",            # E0306: __rep__ must return str()
+      "invalid-str-returned",             # E0307: __str__ must return str()
+      "invalid-bytes-returned",           # E0308: __bytes__ must return bytes()
+      "invalid-hash-returned",            # E0309: __hash__ must return int()
+      "invalid-length-hint-returned",     # E0310: __len_hint__ must return +ve int()
+      "invalid-format-returned",          # E0311: __format__ must return str()
+      "invalid-getnewargs-returned",      # E0312: __getnewargs__ must return tuple()
+      "invalid-getnewargs-ex-returned",   # E0313: __getnewargs_ex__ must ret (tuple, dict)
+      "import-error",                     # E0401: pylint cannot import package
+      "relative-beyond-top-level",        # E0402: don't access packages outside the current package
+      "unpacking-non-sequence",           # E0633
+      "invalid-all-object",               # E0604: __all__ can only have strings
+      "no-name-in-module",                # E0611
+      "undefined-variable",               # E0602
+      "undefined-all-variable",           # E0603
+      "used-before-assignment",           # E0601
+      "bad-except-order",                 # E0701: put more specific exceptions first
+      "raising-bad-type",                 # E0702: must be class/instance/str
+      "bad-exception-context",            # E0703: 'from' must raise something inheriting 'Exception'
+      "misplaced-bare-raise",             # E0704: a raise outside 'except' must have argument
+      "raising-non-exception",            # E0710: must inherit BaseException
+      "notimplemented-raised",            # E0711: use 'NotImplementedError' not 'NotImplemented'
+      "catching-non-exception",           # E0712: must inherit 'Exception'
+      "bad-super-call",                   # E1003: current class must be first arg
+      "unsupported-assignment-operation", # E1137
+      "unsupported-delete-operation",     # E1138
+      "invalid-unary-operand",            # E1130
+      "unsupported-binary-operation",     # E1131
+      "no-member",                        # E1101
+      "not-callable",                     # E1102
+      "redundant-keyword-arg",            # E1124
+      "assignment-from-no-return",        # E1111
+      "assignment-from-none",             # E1128
+      "not-context-manager",              # E1129
+      "unhashable-dict-key",              # E1140
+      "repeat-keyword",                   # E1132
+      "invalid-metaclass",                # E1139
+      "missing-kwoa",                     # E1125: mandatory keyword arg
+      "no-value-for-parameter",           # E1120
+      "not-an-iterable",                  # E1133
+      "not-a-mapping",                    # E1134
+      "invalid-sequence-index",           # E1126
+      "invalid-slice-index",              # E1127
+      "too-many-function-args",           # E1121
+      "unexpected-keyword-arg",           # E1123
+      "dict-iter-missing-items",          # E1141
+      "unsupported-membership-test",      # E1135
+      "unsubscriptable-object",           # E1136
+      "bad-string-format-type",           # E1307
+      "format-needs-mapping",             # E1303
+      "truncated-format-string",          # E1301
+      "missing-format-string-key",        # E1304
+      "mixed-format-string",              # E1302
+      "too-few-format-args",              # E1306
+      "bad-str-strip-call",               # E1310
+      "too-many-format-args",             # E1305
+      "bad-format-character",             # E1300
+      "invalid-envvar-var",               # E1507
+      "print-statement",                  # E1601: need brackets
+      "unpacking-in-except",              # E1603
+      "old-raise-syntax",                 # E1604: 'raise ErrorClass, args' => 'raise ErrorClass(args)'
+      "backtick",                         # E1605: depreceiated in Python 3
+
+      "unreachable",                      # W0101
+      "dangerous-default-value",          # W0102: use 'None' instead
+      "unnecessary-pass",                 # W0107
+      "duplicate-key",                    # W0109: keys in dict are unique
+      "useless-else-on-loop",             # W0120: else only used if loop breaks
+      "exec-used",                        # W0122: exec is unsafe
+      "eval-used",                        # W0123: eval is evil
+      "self-assigning-variable",          # W0127: assigning a var to itself is useless
+      "redeclared-assigned-name",         # W0128: declared twice, eg 'a,a,b = 1,2,3'
+      "assert-on-string-literal",         # W0129: assert on str is useless
+      "lost-exception",                   # W0150: returning in a 'finally' swallows exception
+      "nan-comparison",                   # W0177: float('nan') == float('nan') is false,
+      "assert-on-tuple",                  # W0199: unclear assertion due to syntax
+      "attribute-defined-outside-init",   # W201: attrs should be defined in __init__
+      "bad-staticmethod-argument",        # W0211: static methods don't have self
+      "protected-access",                 # W0212: when _attr accessed outside class
+      "arguments-differ",                 # W0221: interface does not match
+      "signature-differs",                # W0222: method signature different from expected
+      "abstract-method",                  # W0223: must implement all abstract methods
+      "useless-super-delegation",         # W0225: does same thing as super() method
+      "super-init-not-called",            # W0231: always call super().__init__()
+      "non-parent-init-called",           # W0233: must call immediate base __init__
+      "invalid-overridden-method",        # W0236: does not match base class
+      "wildcard-import",                  # W0401: don't be lazy
+      "deprecated-module",                # W0402: needs replacing
+      "reimported",                       # W0404: tis silly
+      "import-self",                      # W0406: tis silly
+      "cell-var-from-loop",               # W0640
+      "global-variable-undefined",        # W0601
+      "self-cls-assignment",              # W0642
+      "unbalanced-tuple-unpacking",       # W0632
+      "possibly-unused-variable",         # W0641
+      "redefined-builtin",                # W0622
+      "redefine-in-handler",              # W0623
+      "redefined-outer-name",             # W0621
+      "unused-import",                    # W0611
+      "unused-argument",                  # W0613
+      "unused-wildcard-import",           # W0614
+      "unused-variable",                  # W0612
+      "global-variable-not-assigned",     # W0602
+      "undefined-loop-variable",          # W0631
+      "global-statement",                 # W0603
+      "global-at-module-level",           # W0604
+      "bare-except",                      # W0702: catch alls can miss legit errors
+      "broad-except",                     # W0703: might overlook other legit errors
+      "duplicate-except",                 # W0705: catch error already caught
+      "try-except-raise",                 # W0706: useless catch
+      "raise-missing-from",               # W0707: re-raising looses traceback without 'from'
+      "binary-op-exception",              # W0711: use parentheses 'except (A, B) as err:'
+      "raising-format-tuple",             # W0715: Exception("{}{}", a, b) => Exception(f"{a}{b}")
+      "wrong-exception-operation",        # W0716: Exceptions are not designed for this
+      "keyword-arg-before-vararg",        # W1113
+      "non-str-assignment-to-dunder-name",# W1115
+      "arguments-out-of-order",           # W1114
+      "isinstance-second-argument-not-valid-type",# W1116
+      "anomaious-unicode-escape-in-string",# W1402
+      "anomaious-backslash-in-string",    # W1401
+      "duplicate-string-formatting-argument",# W1308
+      "format-combined-specification",    # W1305
+      "bad-format-string-key",            # W1300
+      "implicit-str-concat",              # W1404
+      "bad-format-string",                # W1302
+      "missing-format-attribute",         # W1306
+      "misisng-format-argument-key",      # W1303
+      "inconsistent-quotes",              # W1405
+      "unused-format-string-argument",    # W1304
+      "unused-format-string-key",         # W1301
+      "f-string-without-interpolation",   # W1309
+      "invalid-format-index",             # W1307
+      "bad-open-mode",                    # W1501
+      "invalid-envvar-default",           # W1508
+      "redundant-unittest-assert",        # W1503
+      "shallow-copy-environ",             # W1507
+      "boolean-datetime",                 # W1502
+      "deprecated-argument",              # W1511
+      "deprecated-method",                # W1505
+      "subprocess-popen-preexec-fn",      # W1509
+      "subprocess-run-check",             # W1510
+      "bad-thread-instantiation",         # W1506
+      "apply-builtin",                    # W1601: removed
+      "basestring-builtin",               # W1602: removed
+      "buffer-builtin",                   # W1603: removed
+      "cmp-builtin",                      # W1604: removed
+      "coerce-builtin",                   # W1605: removed
+      "execfile-builtin",                 # W1606: removed
+      "file-builtin",                     # W1607: removed
+      "long-builtin",                     # W1608: removed
+      "raw_input-builtin",                # W1609: removed
+      "reduce-builtin",                   # W1610: removed
+      "standarderror-builtin",            # W1611: removed
+      "unicode-builtin",                  # W1612: removed
+      "xrange-builtin",                   # W1613: removed
+      "coerce-method",                    # W1614: removed
+      "delslice-method",                  # W1615: removed
+      "getslice-method",                  # W1616: removed
+      "setslice-method",                  # W1617: removed
+      "dict-iter-method",                 # W1620: not supported
+      "dict-view-method",                 # W1621: not supported
+      "metaclass-assignment",             # W1623
+      "indexing-exception",               # W1624: does not work
+      "raising-string",                   # W1625: bad practice
+      "reload-builtin",                   # W1626: removed, use importlib.reload
+      "oct-method",                       # W1627: removed
+      "hex-method",                       # W1628: removed
+      "nonzero-method",                   # W1629: removed
+      "cmp-method",                       # W1630: removed
+      "input-builtin",                    # W1632: should not be using 'input' in webapp
+      "intern-builtin",                   # W1634: moved to sys.intern
+      "unichr-builtin",                   # w1635: use chr
+      # "map-builtin-not-iterating",        # W1636: is an iterator, not list
+      # "zip-builtin-not-iterating",        # W1637: is an iterator, not list
+      # "range-builtin-not-iterating",      # W1638: is an iterator, not list
+      # "filter-builtin-not-iterating",     # W1639: is an iterator, not list
+      "using-cmp-argument",               # W1640
+      "div-method",                       # W1642: removed, use __truediv__
+      "idiv-method",                      # W1643: removed, use __itruediv__
+      "rdiv-method",                      # W1644: removed, use __rtruediv__
+      "exception-message-attribute",      # W1645: use str(err) instead
+      "invalid-str-codec",                # W1646: str.decode valid codec
+      "sys-max-int",                      # W1647: use sys.maxsize
+      "bad-python3-import",               # W1648: moved
+      "deprecated-string-function",       # W1649
+      "deprecated-str-translate-call",    # W1650
+      "deprecated-itertools-function",    # W1651
+      "deprecated-types-field",           # W1652
+      # "dict-items-not-iterating",         # W1654: items is an iterator, not list
+      # "dict-keys-not-iterating",          # W1655: keys is an iterator, not list
+      # "dict-values-not-iterating",        # W1656: values is an iterator, not list
+      "deprecated-operator-function",     # W1657
+      "deprecated-urllib-function",       # W1658
+      "xreadlines-attribute",             # W1659
+      "deprecated-sys-function",          # W1660
+
+      "no-classmethod-decorator",         # R0202: use decorator syntax
+      "no-staticmethod-decorator",        # R0203: ^
+      "literal-comparison",               # R0123: eg 'foo is 12' has strange behaviour
+      "comparison-with-itself",           # R0124
+      "property-with-parameters",         # R0206: properties cannot be called with params
+      "cyclic-import",                    # R0401: not good
+
+      "bad-classmethod-argument",         # C0202: must use 'cls' in class methods
+      "bad-mcs-method-argument",          # C0203: must use 'cls' in meta-class methods
+      "bad-mcs-classmethod-argument",     # C0204: must use 'mcs' in meta-class class methods
+      "non-ascii-name",                   # C0144
+]
+
+[tool.pylint.'REPORTS']
+score = "no"
