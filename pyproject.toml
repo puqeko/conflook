@@ -15,9 +15,11 @@ version = {use_scm = true}
 description = "Inspect ugly config files."
 authors = [{name = "puqeko"}]
 dependencies = [
-    "click~=8.0"
+    "click~=8.0",
+    "tomlkit~=0.7",
+    "pyyaml~=6.0",
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 dynamic = ["version", "classifiers"]
 readme = "README.md"
 keywords = ["cli", "configuration", "inspect", "utility", "development"]
@@ -26,7 +28,7 @@ license = {text = "MIT"}
     # homepage = ""
 
 [project.scripts]
-conflook = "cli:cli"
+conflook = "conflook:cli"
 
 [tool.pdm]
 [tool.pdm.dev-dependencies]

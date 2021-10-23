@@ -3,9 +3,6 @@ name = "backports.entry-points-selectable"
 version = "1.1.0"
 requires_python = ">=2.7"
 summary = "Compatibility shim providing selectable entry points for older implementations"
-dependencies = [
-    "importlib-metadata; python_version < \"3.8\"",
-]
 
 [[package]]
 name = "cfgv"
@@ -20,7 +17,6 @@ requires_python = ">=3.6"
 summary = "Composable command line interface toolkit"
 dependencies = [
     "colorama; platform_system == \"Windows\"",
-    "importlib-metadata; python_version < \"3.8\"",
 ]
 
 [[package]]
@@ -42,19 +38,9 @@ summary = "A platform independent file lock."
 
 [[package]]
 name = "identify"
-version = "2.3.0"
+version = "2.3.1"
 requires_python = ">=3.6.1"
 summary = "File identification library for Python"
-
-[[package]]
-name = "importlib-metadata"
-version = "4.8.1"
-requires_python = ">=3.6"
-summary = "Read metadata from Python packages"
-dependencies = [
-    "typing-extensions>=3.6.4; python_version < \"3.8\"",
-    "zipp>=0.5",
-]
 
 [[package]]
 name = "nodeenv"
@@ -75,7 +61,6 @@ summary = "A framework for managing and maintaining multi-language pre-commit ho
 dependencies = [
     "cfgv>=2.0.0",
     "identify>=1.0.0",
-    "importlib-metadata; python_version < \"3.8\"",
     "nodeenv>=0.11.1",
     "pyyaml>=5.1",
     "toml",
@@ -101,9 +86,10 @@ requires_python = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 summary = "Python Library for Tom's Obvious, Minimal Language"
 
 [[package]]
-name = "typing-extensions"
-version = "3.10.0.2"
-summary = "Backported and Experimental Type Hints for Python 3.5+"
+name = "tomlkit"
+version = "0.7.2"
+requires_python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+summary = "Style preserving TOML library"
 
 [[package]]
 name = "virtualenv"
@@ -114,20 +100,13 @@ dependencies = [
     "backports.entry-points-selectable>=1.0.4",
     "distlib<1,>=0.3.1",
     "filelock<4,>=3.0.0",
-    "importlib-metadata>=0.12; python_version < \"3.8\"",
     "platformdirs<3,>=2",
     "six<2,>=1.9.0",
 ]
 
-[[package]]
-name = "zipp"
-version = "3.6.0"
-requires_python = ">=3.6"
-summary = "Backport of pathlib-compatible object wrapper for zip files"
-
 [metadata]
 lock_version = "3.1"
-content_hash = "sha256:ecf46b030682d67fa1ab7c238413e2fe450bb7450cc88a732cc3f03803a0ddca"
+content_hash = "sha256:781943204b24ba1429a51e35221d940eac21f2a8df7b6b151a5c6ba997f74902"
 
 [metadata.files]
 "backports.entry-points-selectable 1.1.0" = [
@@ -154,13 +133,9 @@ content_hash = "sha256:ecf46b030682d67fa1ab7c238413e2fe450bb7450cc88a732cc3f0380
     {file = "filelock-3.3.1-py3-none-any.whl", hash = "sha256:2b5eb3589e7fdda14599e7eb1a50e09b4cc14f34ed98b8ba56d33bfaafcbef2f"},
     {file = "filelock-3.3.1.tar.gz", hash = "sha256:34a9f35f95c441e7b38209775d6e0337f9a3759f3565f6c5798f19618527c76f"},
 ]
-"identify 2.3.0" = [
-    {file = "identify-2.3.0-py2.py3-none-any.whl", hash = "sha256:d1e82c83d063571bb88087676f81261a4eae913c492dafde184067c584bc7c05"},
-    {file = "identify-2.3.0.tar.gz", hash = "sha256:fd08c97f23ceee72784081f1ce5125c8f53a02d3f2716dde79a6ab8f1039fea5"},
-]
-"importlib-metadata 4.8.1" = [
-    {file = "importlib_metadata-4.8.1-py3-none-any.whl", hash = "sha256:b618b6d2d5ffa2f16add5697cf57a46c76a56229b0ed1c438322e4e95645bd15"},
-    {file = "importlib_metadata-4.8.1.tar.gz", hash = "sha256:f284b3e11256ad1e5d03ab86bb2ccd6f5339688ff17a4d797a0fe7df326f23b1"},
+"identify 2.3.1" = [
+    {file = "identify-2.3.1-py2.py3-none-any.whl", hash = "sha256:5a5000bd3293950d992843c0ef3d82b90a582de2161557bda7f493c8c8864f26"},
+    {file = "identify-2.3.1.tar.gz", hash = "sha256:8a92c56893e9a4ce951f09a50489986615e3eba7b4c60610e0b25f93ca4487ba"},
 ]
 "nodeenv 1.6.0" = [
     {file = "nodeenv-1.6.0-py2.py3-none-any.whl", hash = "sha256:621e6b7076565ddcacd2db0294c0381e01fd28945ab36bcf00f41c5daf63bef7"},
@@ -217,16 +192,11 @@ content_hash = "sha256:ecf46b030682d67fa1ab7c238413e2fe450bb7450cc88a732cc3f0380
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
     {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
 ]
-"typing-extensions 3.10.0.2" = [
-    {file = "typing_extensions-3.10.0.2-py2-none-any.whl", hash = "sha256:d8226d10bc02a29bcc81df19a26e56a9647f8b0a6d4a83924139f4a8b01f17b7"},
-    {file = "typing_extensions-3.10.0.2-py3-none-any.whl", hash = "sha256:f1d25edafde516b146ecd0613dabcc61409817af4766fbbcfb8d1ad4ec441a34"},
-    {file = "typing_extensions-3.10.0.2.tar.gz", hash = "sha256:49f75d16ff11f1cd258e1b988ccff82a3ca5570217d7ad8c5f48205dd99a677e"},
+"tomlkit 0.7.2" = [
+    {file = "tomlkit-0.7.2-py2.py3-none-any.whl", hash = "sha256:173ad840fa5d2aac140528ca1933c29791b79a374a0861a80347f42ec9328117"},
+    {file = "tomlkit-0.7.2.tar.gz", hash = "sha256:d7a454f319a7e9bd2e249f239168729327e4dd2d27b17dc68be264ad1ce36754"},
 ]
 "virtualenv 20.8.1" = [
     {file = "virtualenv-20.8.1-py2.py3-none-any.whl", hash = "sha256:10062e34c204b5e4ec5f62e6ef2473f8ba76513a9a617e873f1f8fb4a519d300"},
     {file = "virtualenv-20.8.1.tar.gz", hash = "sha256:bcc17f0b3a29670dd777d6f0755a4c04f28815395bca279cdcb213b97199a6b8"},
-]
-"zipp 3.6.0" = [
-    {file = "zipp-3.6.0-py3-none-any.whl", hash = "sha256:9fe5ea21568a0a70e50f273397638d39b03353731e6cbbb3fd8502a33fec40bc"},
-    {file = "zipp-3.6.0.tar.gz", hash = "sha256:71c644c5369f4a6e07636f0aa966270449561fcea2e3d6747b8d23efaa9d7832"},
 ]
