@@ -6,7 +6,7 @@ import difflib
 import functools
 import pathlib
 from abc import abstractmethod
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping, Sequence, Sized
 
 
 def is_keychar(char):
@@ -43,6 +43,17 @@ class ConfigDoc(Mapping):
         """
         return []
 
+    @staticmethod
+    def get_type_description(obj):
+        """
+        Return a string which describes the type of the object passed in. It is
+        expected that the obj will originate from a ConfigDoc.
+        """
+        desc = obj.__class__.__name__
+        if isinstance(obj, Sized):
+            desc += f"({len(obj)})"
+        return desc
+
     def has_compatible_suffix(self, filename):
         """
         Return true if the filename extension is compatable with this handler.
@@ -54,91 +65,69 @@ class ConfigDoc(Mapping):
         """
         Follow the path through nested dicts as described by keypath.
 
-        Keypath is a dot seporated path of keys containing "A-Za-z0-9_-", or if the
-        key is of the form [idx] where idx is an integer then index to idx in the
-        sequence. Eg "path.to.[2].thing". Obviously, not all keys can be addressed
-        in this format.
+        Keypath is a dot seporated path of keys containing "A-Za-z0-9_-".
+        Eg "path.to.2.thing". Not all keys can be addressed in this format.
+        If the value is indexable, the number is the index instead of the key.
 
         If approx is True, follow either
         - the shortest key for which the given key is a prefix
         - a close matching key as determined by difflib
 
         Returns the value at the end of keypath and the actual keypath followed.
-        Raises a KeyError if the keypath is invalid.
+        If the keypath is invalid or can't be followed then return None and a
+        string describing the issue.
         """
+
+        keypath = keypath.strip()
+        if keypath == "":
+            return self._doc, keypath
 
         keys = keypath.split(".")
         cur = self._doc
-        pos = 0
         actual_path = []
         for key in keys:
             cur_path = ".".join(actual_path + [key])
 
+            if len(key) == 0 or not all(is_keychar(c) for c in key):
+                return None, (
+                    "Invalid keypath. Keypath is a dot seporated path "
+                    'of keys containing "A-Za-z0-9_-"'
+                )
+
             # List indexing
-            if len(key) > 2 and key[0] == "[" and key[-1] == "]":
-                if not all(ord("0") <= ord(c) <= ord("9") for c in key[1:-1]):
-                    raise KeyError(f"Index for '{cur_path}' must be an integer.")
-                if isinstance(cur, Sequence):
-                    idx = int(key[1:-1])
-                    if idx > len(cur) - 1:
-                        KeyError(f"Index for '{cur_path}' out of range [{len(cur)}].")
-                    cur = cur[idx]
-                    pos += len(key) - 1
-                    actual_path.append(f"[{idx}]")
-                    continue
-                raise KeyError(f"Value at '{cur_path}' is not indexible.")
+            if isinstance(cur, Sequence):
+                if not all(ord("0") <= ord(c) <= ord("9") for c in key):
+                    return None, f"Index for '{cur_path}' must be an integer."
+
+                if int(key) > len(cur) - 1:
+                    return None, f"Index for '{cur_path}' out of range [{len(cur)}]."
+
+                cur = cur[int(key)]
 
             # Dictionary keys
-            if len(key) > 0 and all(is_keychar(c) for c in key):
-                if not isinstance(cur, Mapping):
-                    raise KeyError(
-                        f"Value at '{cur_path}' is not an explorable mapping."
-                    )
+            elif isinstance(cur, Mapping):
+                if key not in cur:
+                    if not approx:
+                        return None, f"No key '{cur_path}'."
 
-                if key in cur:
-                    cur = cur[key]
-                    pos += len(key) - 1
-                    actual_path.append(key)
-                    continue
-
-                if approx:
                     fprefix = functools.partial(lambda s, k: s.startswith(k), k=key)
                     prefixs = list(sorted(filter(fprefix, cur.keys())))
                     closest = difflib.get_close_matches(key, cur.keys())
-                    if prefixs or closest:
-                        choice = (prefixs or closest)[0]
-                        cur = cur[choice]
-                        pos += len(key) - 1
-                        actual_path.append(choice)
-                        continue
+                    if not (prefixs or closest):
+                        return None, f"No close matches for {cur_path}'."
 
-                    raise KeyError(f"No close matches for {cur_path}'.")
+                    key = (prefixs or closest)[0]
 
-                raise KeyError(f"No key '{cur_path}'.")
+                cur = cur[key]
+            else:
+                return (
+                    None,
+                    f"Value at '{cur_path}' is not an explorable mapping or sequence.",
+                )
 
-            raise KeyError(
-                "Invalid keypath. Keypath is a dot seporated path "
-                'of keys containing "A-Za-z0-9_-", or if the key '
-                "is of the form [idx] where idx is an integer then "
-                "index to idx in the sequence."
-                f"{keypath}"
-                " " * pos + "^"
-            )
+            actual_path.append(key)
 
         return cur, ".".join(actual_path)
-
-    def try_follow_keypath(self, keypath, approx=False):
-        """
-        Same as follow_keypath() but if a KeyError occurs catch it, returning
-        a None value and a string describing the error.
-        """
-
-        try:
-            value, actual_path = self.follow_keypath(keypath, approx)
-        except KeyError as err:
-            return None, str(err)
-        else:
-            return value, actual_path
 
     def __getitem__(self, key):
         if isinstance(self._doc, (Mapping, Sequence)):
