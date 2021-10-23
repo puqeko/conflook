@@ -2,6 +2,7 @@
 Entry point to command line interface.
 """
 
+import os
 import sys
 from collections.abc import Mapping
 
@@ -15,8 +16,9 @@ from .filetypes.toml import TOMLDoc
 @click.option("--raw", "is_raw", is_flag=True, help="Show full value.")
 @click.argument("file", type=click.File("rb"))
 @click.argument("keypath", default="", required=False)
+@click.pass_context
 # pylint: disable=unused-argument
-def cli(file, keypath, is_raw):
+def cli(ctx, file, keypath, is_raw):
     """
     1. Check for valid config file.
     2. Process it into dictonary.
@@ -37,10 +39,15 @@ def cli(file, keypath, is_raw):
     print(doc.get_type_description(value))
 
     if isinstance(value, Mapping):
-        row_width = max(map(len, value.keys())) + 1
+        table = []
         for key, val in value.items():
-            print(key + " " * (row_width - len(key)), end="")
-            print(doc.get_type_description(val), str(val)[:20])
+            table.append((key, doc.get_type_description(val), str(val)))
+        ncol1, ncol2, _ = (max(map(len, r)) + 1 for r in zip(*table))
+        termwidth, _ = os.get_terminal_size(0)
+        for acol, bcol, ccol in table:
+            print(acol + " " * (ncol1 - len(acol)), end="")
+            print(bcol + " " * (ncol2 - len(bcol)), end="")
+            print(ccol[: termwidth - ncol1 - ncol2])
     else:
         print(value)
 
