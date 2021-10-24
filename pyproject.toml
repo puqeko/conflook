@@ -7,7 +7,6 @@ build-backend = "pdm.pep517.api"
 [tool.isort]
 profile = "black"  # Be compatible with the black formatter
 multi_line_output = 3  # For black compatability
-sections = "STDLIB,THIRDPARTY,LOCALFOLDER"
 
 [project]
 name = "conflook"

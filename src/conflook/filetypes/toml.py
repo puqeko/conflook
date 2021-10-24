@@ -24,7 +24,6 @@ class TOMLDoc(ConfigDoc):
 
         super().__init__(doc)
 
-    @property
     @staticmethod
     def _compatible_suffixes():
         return ["toml"]

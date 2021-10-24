@@ -34,7 +34,6 @@ class ConfigDoc(Mapping):
         """
         self._doc = obj  # {} or [] like
 
-    @property
     @staticmethod
     @abstractmethod
     def _compatible_suffixes():
@@ -54,12 +53,13 @@ class ConfigDoc(Mapping):
             desc += f"({len(obj)})"
         return desc
 
-    def has_compatible_suffix(self, filename):
+    @classmethod
+    def has_compatible_suffix(cls, filename):
         """
         Return true if the filename extension is compatable with this handler.
         """
         ext = pathlib.Path(filename).suffix.strip(".").lower()
-        return ext in self._compatible_suffixes
+        return ext in cls._compatible_suffixes()
 
     def follow_keypath(self, keypath, approx=False):
         """

@@ -8,7 +8,7 @@ from collections.abc import Mapping
 
 import click
 
-from .filetypes.toml import TOMLDoc
+from .filetypes import JSONDoc, TOMLDoc
 
 
 @click.command(help="Show summarised structure or value at keypath.")
@@ -16,9 +16,8 @@ from .filetypes.toml import TOMLDoc
 @click.option("--raw", "is_raw", is_flag=True, help="Show full value.")
 @click.argument("file", type=click.File("rb"))
 @click.argument("keypath", default="", required=False)
-@click.pass_context
 # pylint: disable=unused-argument
-def cli(ctx, file, keypath, is_raw):
+def cli(file, keypath, is_raw):
     """
     1. Check for valid config file.
     2. Process it into dictonary.
@@ -26,7 +25,14 @@ def cli(ctx, file, keypath, is_raw):
     4. Echo summarised representation of value to terminal.
     """
 
-    doc = TOMLDoc(file)
+    if TOMLDoc.has_compatible_suffix(file.name):
+        doc = TOMLDoc(file)
+    elif JSONDoc.has_compatible_suffix(file.name):
+        doc = JSONDoc(file)
+    else:
+        print(f"Cannot read '{file.name}'.", file=sys.stderr)
+        return
+
     value, actual_path = doc.follow_keypath(keypath, approx=True)
 
     if value is None:
