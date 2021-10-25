@@ -7,6 +7,7 @@ import io
 import yaml
 
 from .default import ConfigDoc
+from .json import JSONDoc
 
 
 class YAMLDoc(ConfigDoc):
@@ -40,3 +41,7 @@ class YAMLDoc(ConfigDoc):
     @staticmethod
     def compatible_suffixes():
         return ["yaml", "yml"]
+
+    @staticmethod
+    def get_type_description(obj):
+        return JSONDoc.get_type_description(obj)
