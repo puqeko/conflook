@@ -3,8 +3,19 @@ JSON files
 """
 
 import json
+from collections.abc import Sized
 
 from .default import ConfigDoc
+
+TYPE_MAP = {
+    "str": "String",
+    "list": "Array",
+    "dict": "Object",
+    "int": "Number",
+    "float": "Number",
+    "bool": "Boolean",
+    "None": "nil",
+}
 
 
 class JSONDoc(ConfigDoc):
@@ -27,3 +38,16 @@ class JSONDoc(ConfigDoc):
     @staticmethod
     def _compatible_suffixes():
         return ["json"]
+
+    @staticmethod
+    def get_type_description(obj):
+        """
+        Return a string which describes the type of the object passed in. It is
+        expected that the obj will originate from a JSONDoc.
+        """
+
+        desc = obj.__class__.__name__
+        desc = TYPE_MAP.get(desc, "UnknownType")
+        if isinstance(obj, Sized):
+            desc += f"({len(obj)})"
+        return desc
