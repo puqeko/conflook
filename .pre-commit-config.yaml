@@ -1,6 +1,10 @@
 # Enforce consistent style and check for common erros before making a git commit
 # See https://pre-commit.com for more information
 
+# Don't edit files in eg since these files might intentionally be wrong for
+# testing purposes
+exclude: "eg/.+"
+
 repos:
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.1.10
@@ -29,6 +33,7 @@ repos:
         description: Check for valid Python
       - id: debug-statements
         description: Check for debugger imports and py37+ `breakpoint()` calls in python source
+      - id: check-json
       - id: check-toml
       - id: check-yaml
 
