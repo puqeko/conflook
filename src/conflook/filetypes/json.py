@@ -36,7 +36,7 @@ class JSONDoc(ConfigDoc):
         super().__init__(doc)
 
     @staticmethod
-    def _compatible_suffixes():
+    def compatible_suffixes():
         return ["json"]
 
     @staticmethod

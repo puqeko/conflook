@@ -36,7 +36,7 @@ class ConfigDoc(Mapping):
 
     @staticmethod
     @abstractmethod
-    def _compatible_suffixes():
+    def compatible_suffixes():
         """
         Should return a list of strings which are valid file extensions.
         """
@@ -59,7 +59,7 @@ class ConfigDoc(Mapping):
         Return true if the filename extension is compatable with this handler.
         """
         ext = pathlib.Path(filename).suffix.strip(".").lower()
-        return ext in cls._compatible_suffixes()
+        return ext in cls.compatible_suffixes()
 
     def follow_keypath(self, keypath, approx=False):
         """

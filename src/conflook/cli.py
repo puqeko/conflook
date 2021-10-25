@@ -5,10 +5,13 @@ Entry point to command line interface.
 import os
 import sys
 from collections.abc import Mapping
+from pathlib import Path
 
 import click
 
-from .filetypes import JSONDoc, TOMLDoc
+from .filetypes import JSONDoc, TOMLDoc, YAMLDoc
+
+FILETYPES = [TOMLDoc, JSONDoc, YAMLDoc]
 
 
 @click.command(help="Show summarised structure or value at keypath.")
@@ -25,12 +28,16 @@ def cli(file, keypath, is_raw):
     4. Echo summarised representation of value to terminal.
     """
 
-    if TOMLDoc.has_compatible_suffix(file.name):
-        doc = TOMLDoc(file)
-    elif JSONDoc.has_compatible_suffix(file.name):
-        doc = JSONDoc(file)
+    for cls in FILETYPES:
+        if cls.has_compatible_suffix(file.name):
+            doc = cls(file)
+            break
     else:
-        print(f"Cannot read '{file.name}'.", file=sys.stderr)
+        print(f"Unsupported file format '{Path(file.name).suffix}'.", file=sys.stderr)
+        supported = []
+        for cls in FILETYPES:
+            supported.extend(cls.compatible_suffixes())
+        print(f"Supported formats: {' '.join(supported)}")
         return
 
     value, actual_path = doc.follow_keypath(keypath, approx=True)
