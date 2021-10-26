@@ -10,7 +10,7 @@ multi_line_output = 3  # For black compatability
 
 [project]
 name = "conflook"
-version = {use_scm = true}
+version = "v0.1.0"
 description = "Inspect ugly config files."
 authors = [{name = "puqeko"}]
 dependencies = [

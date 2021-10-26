@@ -5,10 +5,20 @@ A command line utiltiy for inspecting hard-to-read project config files such as 
 ## Usage
 
 ```
-conflook eg.toml database
+Usage: conflook [OPTIONS] FILE [KEYPATH]
+
+  Show summarised structure or value at keypath.
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
 ```
 
-Gives
+Keypath is a dot separated list of keys or indicies. For example, `database.ports.2` would access the `database` table, then the `ports` array within that, then the 3rd item (at index 2) within that array. A consequence of this notation is that not all possible keys can be addressed.
+
+If the value at the end of a valid keypath is a map-like object then it is shown as a list of keys followed by their type followed by a preview of their contents.
+
+For example,
 
 ```
 database, Table(4)
@@ -18,9 +28,9 @@ connection_max Integer    5000
 enabled        bool       True
 ```
 
-Map-like objects are shown as a list of keys followed by their type followed by a preview of their contents.
+A content preview attempts to be close to the real text content in the configuration file. For example, a YAML `!!binary` entry will not be decoded. Control sequences (eg newlines) in strings will be escaped.
 
-Note that if no matching key is found then conflook will show
+Note that if no matching key is found in a keypath then conflook will show
 
 - The shortest key for which the given key is a prefix, or
 - The closest matching key as determined by difflib
@@ -28,7 +38,7 @@ Note that if no matching key is found then conflook will show
 For example,
 
 ```
-conflook eg.toml database.p
+conflook eg.toml data.prots
 ```
 
 Gives
@@ -40,7 +50,31 @@ database.ports, Array(3)
 
 ## Install
 
-To be described.
+[Avaliable on PyPI](https://pypi.org/project/conflook/).
+
+- Install with PIP.
+
+  ```
+  pip install conflook
+  ```
+
+  Run from command line
+
+  ```
+  conflook --help
+  ```
+
+- OR, Add as development dependancy to PDM project.
+
+  ```
+  pdm add --dev conflook
+  ```
+
+  Run from `pdm`
+
+  ```
+  pdm run conflook --help
+  ```
 
 ## Develop
 
