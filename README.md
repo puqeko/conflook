@@ -1,4 +1,4 @@
-# conflook
+# Conflook
 
 A command line utiltiy for inspecting hard-to-read project config files such as json, yaml, and toml.
 
