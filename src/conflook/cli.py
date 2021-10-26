@@ -18,11 +18,11 @@ FILETYPES = [TOMLDoc, JSONDoc, YAMLDoc]
 
 @click.command(help="Show summarised structure or value at keypath.")
 @click.version_option(package_name="conflook")
-@click.option("--raw", "is_raw", is_flag=True, help="Show full value.")
+# @click.option("--raw", "is_raw", is_flag=True, help="Show full value.")
 @click.argument("file", type=click.File("rb"))
 @click.argument("keypath", default="", required=False)
 # pylint: disable=unused-argument
-def cli(file, keypath, is_raw):
+def cli(file, keypath):
     """
     1. Check for valid config file.
     2. Process it into dictonary.
