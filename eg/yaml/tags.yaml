@@ -32,8 +32,7 @@ bin: !!binary |
   17unp5WZmZgAAAOfn515eXv
   Pz7Y6OjuDg4J+fn5OTk6enp
   56enmleECcgggoBADs=
-cust: !user_type
-  info: 12
+cust: !user_type 12
 tags: !!set
   ? Sports
   ? Balls

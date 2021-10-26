@@ -6,7 +6,7 @@ import difflib
 import functools
 import pathlib
 from abc import abstractmethod
-from collections.abc import Mapping, Sequence, Sized
+from collections.abc import Mapping, Sequence, Set, Sized
 
 
 def is_keychar(char):
@@ -54,6 +54,13 @@ class ConfigDoc(Mapping):
         return desc
 
     @classmethod
+    def str_of(cls, obj):
+        """
+        Get string representation of object.
+        """
+        return str(obj)
+
+    @classmethod
     def has_compatible_suffix(cls, filename):
         """
         Return true if the filename extension is compatable with this handler.
@@ -94,15 +101,17 @@ class ConfigDoc(Mapping):
                     'of keys containing "A-Za-z0-9_-"'
                 )
 
-            # List indexing
-            if isinstance(cur, Sequence):
-                if not all(ord("0") <= ord(c) <= ord("9") for c in key):
+            if all(ord("0") <= ord(c) <= ord("9") for c in key):
+                if isinstance(cur, Sequence):
+                    if int(key) < len(cur):
+                        cur = cur[int(key)]
+                    else:
+                        return (
+                            None,
+                            f"Index for '{cur_path}' out of range [{len(cur)}].",
+                        )
+                else:
                     return None, f"Index for '{cur_path}' must be an integer."
-
-                if int(key) > len(cur) - 1:
-                    return None, f"Index for '{cur_path}' out of range [{len(cur)}]."
-
-                cur = cur[int(key)]
 
             # Dictionary keys
             elif isinstance(cur, Mapping):
@@ -119,6 +128,20 @@ class ConfigDoc(Mapping):
                     key = (prefixs or closest)[0]
 
                 cur = cur[key]
+            elif isinstance(cur, Set):
+                if key not in cur:
+                    if not approx:
+                        return None, f"No set key '{cur_path}'."
+
+                    fprefix = functools.partial(lambda s, k: s.startswith(k), k=key)
+                    prefixs = list(sorted(filter(fprefix, cur)))
+                    closest = difflib.get_close_matches(key, cur)
+                    if not (prefixs or closest):
+                        return None, f"No close matches for {cur_path}'."
+
+                    key = (prefixs or closest)[0]
+
+                cur = key
             else:
                 return (
                     None,

@@ -6,10 +6,12 @@ import os
 import sys
 from collections.abc import Mapping
 from pathlib import Path
+from typing import Sequence
 
 import click
 
 from .filetypes import JSONDoc, TOMLDoc, YAMLDoc
+from .utils import make_printable
 
 FILETYPES = [TOMLDoc, JSONDoc, YAMLDoc]
 
@@ -51,18 +53,31 @@ def cli(file, keypath, is_raw):
 
     print(doc.get_type_description(value))
 
-    if isinstance(value, Mapping):
+    if isinstance(value, Mapping) and not isinstance(value, Sequence):
         table = []
         for key, val in value.items():
-            table.append((key, doc.get_type_description(val), str(val)))
-        ncol1, ncol2, _ = (max(map(len, r)) + 1 for r in zip(*table))
-        termwidth, _ = os.get_terminal_size(0)
-        for acol, bcol, ccol in table:
-            print(acol + " " * (ncol1 - len(acol)), end="")
-            print(bcol + " " * (ncol2 - len(bcol)), end="")
-            print(ccol[: termwidth - ncol1 - ncol2])
+            str_val = ""
+            if hasattr(val, "__str__"):
+                # so that str_val is printed on a single line with \n for newlines etc,
+                # escape control characters \t \r \n etc and replace unprintible unicode
+                # characters with '?'
+                str_val = make_printable(doc.str_of(val))
+
+            table.append((key, doc.get_type_description(val), str_val))
+
+        if len(table) > 0:
+            ncol1, ncol2, _ = (max(map(len, r)) + 1 for r in zip(*table))
+            termwidth, _ = os.get_terminal_size(0)
+
+            for acol, bcol, ccol in table:
+                print(acol + " " * (ncol1 - len(acol)), end="")
+                print(bcol + " " * (ncol2 - len(bcol)), end="")
+                print(ccol[: termwidth - ncol1 - ncol2])
+    elif isinstance(value, Sequence) and not isinstance(value, str):
+        for val in value:
+            print(doc.str_of(val))
     else:
-        print(value)
+        print(doc.str_of(value))
 
 
 if __name__ == "__main__":
