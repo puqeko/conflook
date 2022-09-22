@@ -53,9 +53,16 @@ def cli(file, keypath):
 
     print(doc.get_type_description(value))
 
+    limit = 10
     if isinstance(value, Mapping) and not isinstance(value, Sequence):
+        its = list(value.items())
+        full_size = len(its)
+        is_large = full_size - 2 > limit  # -2 prevents truncating if only 1 or 2 need to be
+        if is_large:
+            its = its[0:limit//2] + its[-(limit//2):]
+
         table = []
-        for key, val in value.items():
+        for i, (key, val) in enumerate(its):
             str_val = ""
             if hasattr(val, "__str__"):
                 # so that str_val is printed on a single line with \n for newlines etc,
@@ -69,15 +76,26 @@ def cli(file, keypath):
             ncol1, ncol2, _ = (max(map(len, r)) + 1 for r in zip(*table))
             termwidth, _ = os.get_terminal_size(0)
 
-            for acol, bcol, ccol in table:
+            for i, (acol, bcol, ccol) in enumerate(table):
+                if is_large and i == limit//2:
+                    print(f"... [{full_size - (limit//2)*2}] ...")
                 print(acol + " " * (ncol1 - len(acol)), end="")
                 print(bcol + " " * (ncol2 - len(bcol)), end="")
                 print(ccol[: termwidth - ncol1 - ncol2])
     elif isinstance(value, Sequence) and not isinstance(value, str):
-        for val in value:
-            print(doc.str_of(val))
+        its = value
+        full_size = len(its)
+        is_large = full_size - 2 > limit  # -2 prevents truncating if only 1 or 2 need to be
+        if is_large:
+            its = its[0:limit//2] + its[-(limit//2):]
+        termwidth, _ = os.get_terminal_size(0)
+
+        for i, val in enumerate(its):
+            if is_large and i == limit//2:
+                print(f"... [{full_size - (limit//2)*2}] ...")
+            print(make_printable(doc.str_of(val))[:termwidth])
     else:
-        print(doc.str_of(value))
+        print(make_printable(doc.str_of(value))[:termwidth*limit])
 
 
 if __name__ == "__main__":
