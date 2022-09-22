@@ -19,16 +19,20 @@ FILETYPES = [TOMLDoc, JSONDoc, YAMLDoc]
 @click.command(help="Show summarised structure or value at keypath.")
 @click.version_option(package_name="conflook")
 # @click.option("--raw", "is_raw", is_flag=True, help="Show full value.")
+@click.option("--limit", "-l", "limit", type=click.INT, default=10, help="Truncate output if more than `limit` lines. If 0, there is no limit. Default 10.")
 @click.argument("file", type=click.File("rb"))
 @click.argument("keypath", default="", required=False)
 # pylint: disable=unused-argument
-def cli(file, keypath):
+def cli(limit, file, keypath):
     """
     1. Check for valid config file.
     2. Process it into dictonary.
     3. Find value at keypath.
     4. Echo summarised representation of value to terminal.
     """
+
+    if limit <= 0:
+        limit = float('inf')
 
     for cls in FILETYPES:
         if cls.has_compatible_suffix(file.name):
@@ -53,7 +57,6 @@ def cli(file, keypath):
 
     print(doc.get_type_description(value))
 
-    limit = 10
     if isinstance(value, Mapping) and not isinstance(value, Sequence):
         its = list(value.items())
         full_size = len(its)
