@@ -16,10 +16,11 @@ from .utils import make_printable
 FILETYPES = [TOMLDoc, JSONDoc, YAMLDoc]
 
 
-@click.command(help="Show summarised structure or value at keypath.")
-@click.version_option(package_name="conflook")
+@click.command(no_args_is_help=True, help="Show summarised structure or value at keypath.")
+@click.version_option(None, "-v", "--version", package_name="conflook")
+@click.help_option("-h", "--help")
 # @click.option("--raw", "is_raw", is_flag=True, help="Show full value.")
-@click.option("--limit", "-l", "limit", type=click.INT, default=10, help="Truncate output if more than `limit` lines. If 0, there is no limit. Default 10.")
+@click.option("--limit", "-l", "limit", type=click.INT, default=10, help="Default 10. Truncate output if more than `limit` lines. If 0, there is no limit.")
 @click.argument("file", type=click.File("rb"))
 @click.argument("keypath", default="", required=False)
 # pylint: disable=unused-argument
