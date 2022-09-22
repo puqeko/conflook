@@ -10,8 +10,10 @@ Usage: conflook [OPTIONS] FILE [KEYPATH]
   Show summarised structure or value at keypath.
 
 Options:
-  --version  Show the version and exit.
-  --help     Show this message and exit.
+  -v, --version        Show the version and exit.
+  -h, --help           Show this message and exit.
+  -l, --limit INTEGER  Default 10. Truncate output if more than `limit` lines.
+                       If 0, there is no limit.
 ```
 
 Keypath is a dot separated list of keys or indicies. For example, `database.ports.2` would access the `database` table, then the `ports` array within that, then the 3rd item (at index 2) within that array. A consequence of this notation is that not all possible keys can be addressed.
