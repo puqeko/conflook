@@ -88,7 +88,7 @@ database.ports, Array(3)
    PDM will keep the versions of 3rd party libraries consistent with `pdm.lock`. The 3rd party libraries which this project depend on are listed in `pyproject.toml` along with other project settings used by the [PyPI](https://pypi.org) and exposing a command when installed.
 
 3. [Enable pre-commit](https://pre-commit.com/#install).
-   Will run automatic checks for each `git commit`, as described in `.pre-commit-config.yaml`. [Pylint](https://pylint.org) will check for the things specified in `pylintrc.toml`. Sometimes these checks can be ignored with a `# pylint: disable=` comment if they are too pedantic.
+   Will run automatic checks for each `git commit`, as described in `.pre-commit-config.yaml`. Might need to run `pdm run pre-commit install` to setup. [Pylint](https://pylint.org) will check for the things specified in `pylintrc.toml`. Sometimes these checks can be ignored with a `# pylint: disable=` comment if they are too pedantic.
 
 PDM should install an editable package. Make sure to put `pdm run` before any commands to make sure the correct Python interpreter is being used and the projects dependancies are avaliable. For example, `pdm run conflook ...` will run this utility, `pdm run pre-commit run` will manually run pre-commit checks, and `pdm run python` will start an interactive python session.
 

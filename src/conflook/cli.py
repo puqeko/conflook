@@ -16,11 +16,20 @@ from .utils import make_printable
 FILETYPES = [TOMLDoc, JSONDoc, YAMLDoc]
 
 
-@click.command(no_args_is_help=True, help="Show summarised structure or value at keypath.")
+@click.command(
+    no_args_is_help=True, help="Show summarised structure or value at keypath."
+)
 @click.version_option(None, "-v", "--version", package_name="conflook")
 @click.help_option("-h", "--help")
 # @click.option("--raw", "is_raw", is_flag=True, help="Show full value.")
-@click.option("--limit", "-l", "limit", type=click.INT, default=10, help="Default 10. Truncate output if more than `limit` lines. If 0, there is no limit.")
+@click.option(
+    "--limit",
+    "-l",
+    "limit",
+    type=click.INT,
+    default=10,
+    help="Default 10. Truncate output if more than `limit` lines. If 0, there is no limit.",
+)
 @click.argument("file", type=click.File("rb"))
 @click.argument("keypath", default="", required=False)
 # pylint: disable=unused-argument
@@ -33,7 +42,7 @@ def cli(limit, file, keypath):
     """
 
     if limit <= 0:
-        limit = float('inf')
+        limit = float("inf")
 
     for cls in FILETYPES:
         if cls.has_compatible_suffix(file.name):
@@ -61,9 +70,11 @@ def cli(limit, file, keypath):
     if isinstance(value, Mapping) and not isinstance(value, Sequence):
         its = list(value.items())
         full_size = len(its)
-        is_large = full_size - 2 > limit  # -2 prevents truncating if only 1 or 2 need to be
+        is_large = (
+            full_size - 2 > limit
+        )  # -2 prevents truncating if only 1 or 2 need to be
         if is_large:
-            its = its[0:limit//2] + its[-(limit//2):]
+            its = its[0 : limit // 2] + its[-(limit // 2) :]
 
         table = []
         for i, (key, val) in enumerate(its):
@@ -81,7 +92,7 @@ def cli(limit, file, keypath):
             termwidth, _ = os.get_terminal_size(0)
 
             for i, (acol, bcol, ccol) in enumerate(table):
-                if is_large and i == limit//2:
+                if is_large and i == limit // 2:
                     print(f"... [{full_size - (limit//2)*2}] ...")
                 print(acol + " " * (ncol1 - len(acol)), end="")
                 print(bcol + " " * (ncol2 - len(bcol)), end="")
@@ -89,17 +100,18 @@ def cli(limit, file, keypath):
     elif isinstance(value, Sequence) and not isinstance(value, str):
         its = value
         full_size = len(its)
-        is_large = full_size - 2 > limit  # -2 prevents truncating if only 1 or 2 need to be
+        # -2 prevents truncating if only 1 or 2 need to be
+        is_large = full_size - 2 > limit
         if is_large:
-            its = its[0:limit//2] + its[-(limit//2):]
+            its = its[0 : limit // 2] + its[-(limit // 2) :]
         termwidth, _ = os.get_terminal_size(0)
 
         for i, val in enumerate(its):
-            if is_large and i == limit//2:
+            if is_large and i == limit // 2:
                 print(f"... [{full_size - (limit//2)*2}] ...")
             print(make_printable(doc.str_of(val))[:termwidth])
     else:
-        print(make_printable(doc.str_of(value))[:termwidth*limit])
+        print(make_printable(doc.str_of(value))[: termwidth * limit])
 
 
 if __name__ == "__main__":
