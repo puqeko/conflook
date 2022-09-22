@@ -10,7 +10,7 @@ multi_line_output = 3  # For black compatability
 
 [project]
 name = "conflook"
-version = "v0.1.1"
+version = "v0.1.2"
 description = "Inspect ugly config files."
 authors = [{name = "puqeko"}]
 dependencies = [
@@ -29,8 +29,10 @@ license = {text = "MIT"}
 [project.scripts]
 conflook = "conflook:cli"
 
+[project.optional-dependencies]
 [tool.pdm]
 [tool.pdm.dev-dependencies]
 dev = [
     "pre-commit~=2.15",
+    "twine>=4.0.1",
 ]
