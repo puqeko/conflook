@@ -93,3 +93,12 @@ database.ports, Array(3)
 PDM should install an editable package. Make sure to put `pdm run` before any commands to make sure the correct Python interpreter is being used and the projects dependancies are avaliable. For example, `pdm run conflook ...` will run this utility, `pdm run pre-commit run` will manually run pre-commit checks, and `pdm run python` will start an interactive python session.
 
 The folder `eg/` contains example files.
+
+## TODO
+
+- search
+- grep friendly
+  - line numbers
+  - don't truncate
+- stats
+- extract sub object or array to file (or is this out of scope?)
