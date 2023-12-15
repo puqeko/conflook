@@ -17,5 +17,6 @@
     "clients": {
         "data": [["gamma","delta"],[1,2]],
         "hosts": ["alpha","omega"]
-    }
+    },
+    "-_special": 1
 }

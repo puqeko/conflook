@@ -11,13 +11,15 @@ from collections.abc import Mapping, Sequence, Set, Sized
 
 def is_keychar(char):
     """
-    Return True if char is A-Z, a-z, or 0-9.
+    Return True if char is A-Z, a-z, 0-9, _, or -.
     """
     if ord(char) >= ord("A") and ord(char) <= ord("Z"):
         return True
     if ord(char) >= ord("a") and ord(char) <= ord("z"):
         return True
     if ord(char) >= ord("0") and ord(char) <= ord("9"):
+        return True
+    if char in ("_", "-"):
         return True
     return False
 
